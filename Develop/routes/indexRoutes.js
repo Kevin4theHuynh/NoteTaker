@@ -1,4 +1,12 @@
 const express = require('express')
 const router = express.Router()
 
+router.get('/notes', (res, req) => {
+    res.sendFile(path.join(__dirname, './public/notes.html'))
+})
+
+router.get('*', (res, req) => {
+    res.sendFile(path.join(__dirname, './public/index.html'))
+})
+
 module.exports = router
