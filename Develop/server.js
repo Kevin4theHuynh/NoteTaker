@@ -1,39 +1,41 @@
+// Varibles for required express
 const express = require('express');
-const app = express()
 const fs = require('fs')
 const path = require('path')
-const useIndexRouter = require('./routes/indexRoutes');
+const uuid = require('uuid');
 const newNote = require('./db/db.json');
+const app = express()
 
-
+const useIndexRouter = require('./routes/indexRoutes');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'))
 
+// Created routes for html
+app.get('/api/notes', (req, res) => {
+    res.sendFile(path.join(__dirname, './db/db.json'))
+}) 
 
+app.get('/index', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'))
+})
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/notes.html'))
+})
 
 app.get('/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, './public/notes.html'))
+    res.sendFile(path.join(__dirname, '/public/notes.html'))
 })
-
-app.get('/api/notes', (req, res) => {
-    res.json(newNote.slice(1))
-})
-
-function postNote (body, array) {
-    const sendNote = body;
-    if (!Array.isArray(array))
-    array = ['']
-    if (array.length = 0) {
-        let addNote = array.push('')
-    }
-        
-    
-}
 
 app.post('/api/notes', (req, res) => {
-    const addNote 
+    const addNote = JSON.parse(fs.readFileSync('./db/db.json'))
+    const newNote = req.body
+    newNote.id = uuid.v4()
+    addNote.push(newNote)
+    fs.writeFileSync('./db/db.json', JSON.stringify(addNote))
+    res.json(addNote)
 })
 
 // app.use("/indexRoutes", useIndexRouter)
